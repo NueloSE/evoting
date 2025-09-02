@@ -1,4 +1,4 @@
-# E-Voting Platform
+# E-Voting Platform (⚠️⚠️⚠️ Inprogress)
 
 ## Project Overview
 
@@ -90,6 +90,21 @@ npm install
 - Assumes small-scale usage (~100-500 voters); larger scales need subcollections.
 - No blockchain-level security.
 - Firebase free tier has quotas (monitor usage).
+
+## Project Milestones
+
+Here is a list of key milestones for the project development:
+
+- ✅ Build the landing page
+- Set up Firebase project, including authentication, Firestore, Realtime Database, and Cloud Functions
+- ⬜️ Implement organizer dashboard: create, edit, delete elections, categories, and candidates
+- ⬜️ Develop voter registration and authentication flow
+- ⬜️ Build voting interface for voters with real-time updates
+- ⬜️ Configure security rules and role-based access controls
+- ⬜️ Integrate real-time vote counting and result viewing
+- ⬜️ Perform testing (unit, integration, and end-to-end) and fix bugs
+- ⬜️ Deploy the application to Vercel/Netlify and Firebase Hosting
+- ⬜️ Add documentation updates and finalize README
 
 ## Contributing
 
