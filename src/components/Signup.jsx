@@ -13,7 +13,7 @@ function Signup() {
         <label htmlFor="email">Full Name</label>
         <div className="relative ">
           <input
-            type="password"
+            type="text"
             className="px-12 py-4"
             id="password"
             placeholder="Enter your full name"
@@ -27,7 +27,7 @@ function Signup() {
         <label htmlFor="email">Email</label>
         <div className="relative ">
           <input
-            type="password"
+            type="email"
             className="px-12 py-4"
             id="password"
             placeholder="Enter your email"
@@ -41,7 +41,7 @@ function Signup() {
         <label htmlFor="password">Password</label>
         <div className="relative ">
           <input
-            type="password"
+            type={seePassword == true ? "text" : "password"}
             className="px-12 py-4"
             id="password"
             placeholder="Create a password"
@@ -66,23 +66,14 @@ function Signup() {
             "
         >
           <input
-            type="password"
+            type={seePassword == true ? "text" : "password"}
             className="px-12 py-4"
             id="password"
             placeholder="Create a password"
           />
 
           <CiLock className="absolute top-4 left-5 text-xl text-black" />
-          <button
-            className="cursor-pointer"
-            onClick={() => setSeePassword(!seePassword)}
-          >
-            {seePassword ? (
-              <LuEyeOff className="absolute top-5 right-10 text-lg " />
-            ) : (
-              <LuEye className="absolute top-5 right-10 text-lg " />
-            )}
-          </button>
+          
         </div>
 
         {/* remember / forget */}

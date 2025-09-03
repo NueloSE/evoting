@@ -13,7 +13,7 @@ function Footer() {
               size="xl"
               className="text-[#4384d0]"
             />
-            <h1 className="logo text-white">Evoting</h1>
+            <h1 className="logo text-white">Evotes</h1>
           </div>
           <p className="max-w-md">
             Empowering democracy through secure, transparent, and accessible

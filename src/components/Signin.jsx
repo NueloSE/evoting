@@ -7,13 +7,17 @@ import { useState } from "react";
 function Signin() {
   const [seePassword, setSeePassword] = useState(false);
 
+  function handlePasswordVisibility() {
+    setSeePassword(!seePassword);
+  }
+
   return (
     <div>
       <div>
         <label htmlFor="email">Email</label>
         <div className="relative ">
           <input
-            type="password"
+            type="email"
             className="px-12 py-4"
             id="password"
             placeholder="Enter your email"
@@ -27,17 +31,14 @@ function Signin() {
         <label htmlFor="password">Password</label>
         <div className="relative ">
           <input
-            type="password"
+            type={seePassword == true ? "text" : "password"}
             className="px-12 py-4"
             id="password"
             placeholder="Enter your password"
           />
 
           <CiLock className="absolute top-5 left-5 text-lg " />
-          <button
-            className="cursor-pointer"
-            onClick={() => setSeePassword(!seePassword)}
-          >
+          <button className="cursor-pointer" onClick={handlePasswordVisibility}>
             {seePassword ? (
               <LuEyeOff className="absolute top-5 right-10 text-lg " />
             ) : (
