@@ -1,5 +1,6 @@
 import { TiArrowRight } from "react-icons/ti";
 import { FaCheck } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 function Ready() {
   return (
@@ -12,9 +13,9 @@ function Ready() {
             most important decisions.
           </p>
 
-          <button className="btn  flex items-center w-fit text-black mx-auto  mt-6 mb-16 bg-slate-200 hover:bg-opacity-30">
+          <Link to="/auth" className="btn  flex items-center w-fit text-black mx-auto  mt-6 mb-16 bg-slate-200 hover:bg-opacity-30">
             Login/Sign Up <TiArrowRight className="text-xl mt-1" />
-          </button>
+          </Link>
 
           <ul className="flex flex-col items-center justify-center md:flex-row gap-6">
             <li className="flex items-center gap-2">

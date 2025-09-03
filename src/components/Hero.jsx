@@ -45,16 +45,16 @@ function Hero() {
         </div>
 
         <div className="relative mt-12">
-          <img className="rounded-2xl"
+          <img
+            className="rounded-2xl"
             src="/public/images/vote.jpeg"
             alt="a finger about to press a blue button on a keyboard with the key having the word vote"
           />
-        
-        <div className="absolute -right-4 -bottom-4 shadow-2xl bg-white px-4 py-2 rounded-xl text-center" >
+
+          <div className="absolute -right-4 -bottom-4 shadow-2xl bg-white px-4 py-2 rounded-xl text-center">
             <h3>Firebase</h3>
             <p>Security</p>
-        </div>
-
+          </div>
         </div>
       </div>
     </div>

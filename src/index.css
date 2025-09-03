@@ -67,4 +67,8 @@
   .number {
     @apply absolute -top-2 right-0 rounded-full px-1 border-2  bg-white;
   }
+
+  .active {
+    @apply bg-slate-50 mx-3 py-3  rounded-full 
+  }
 }

@@ -4,7 +4,7 @@ import { IoLocationOutline } from "react-icons/io5";
 
 function Contact() {
   return (
-    <div className=" px-4 py-24 max-w-4xl mx-auto">
+    <div id="contact" className=" px-4 py-24 max-w-4xl mx-auto">
       <div className="text-center space-y-2">
         <h2>Get in Touch</h2>
         <p className="max-w-3xl mx-auto">
@@ -72,8 +72,8 @@ function Contact() {
         {/* the form */}
         <form className="bg-white p-4  rounded-2xl w-full">
           <h4>Send us a Message</h4>
-          <div className="flex justify-between gap-2">
-            <div>
+          <div className="flex justify-between gap-4">
+            <div className="w-1/2">
               <label htmlFor="fname">First Name</label>
               <input
                 type="text"
@@ -83,7 +83,7 @@ function Contact() {
               />
             </div>
 
-            <div>
+            <div className="w-1/2">
               <label htmlFor="lname">Last Name</label>
               <input
                 type="text"

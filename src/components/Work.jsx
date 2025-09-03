@@ -8,9 +8,9 @@ import { VscGraphLine } from "react-icons/vsc";
 
 function Work() {
   return (
-    <div className="bg-[#e7eeff]">
+    <div id="how-it-work" className="bg-[#e7eeff]">
       <div className="text-center px-4 py-24 max-w-3xl mx-auto ">
-        <h2>How SecureVote Works</h2>
+        <h2>How EVotes Works</h2>
         <p className="mt-2 mb-8">
           Our streamlined process makes digital voting simple, secure, and
           transparent for both voters and administrators.
