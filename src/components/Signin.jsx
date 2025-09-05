@@ -3,16 +3,24 @@ import { CiLock } from "react-icons/ci";
 import { LuEye } from "react-icons/lu";
 import { LuEyeOff } from "react-icons/lu";
 import { useState } from "react";
+import { signInEmailPassword } from "../server/backend";
 
 function Signin() {
   const [seePassword, setSeePassword] = useState(false);
+  const [email, setEmail] = useState(null)
+  const [password, setPassword] = useState(null);
 
   function handlePasswordVisibility() {
     setSeePassword(!seePassword);
   }
 
+  function handleSignIn (e, email, password) {
+    e.preventDefault();
+    signInEmailPassword(email, password)
+  }
+
   return (
-    <div>
+    <form onSubmit={(e) => handleSignIn(e, email, password)}>
       <div>
         <label htmlFor="email">Email</label>
         <div className="relative ">
@@ -21,6 +29,7 @@ function Signin() {
             className="px-12 py-4"
             id="password"
             placeholder="Enter your email"
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <TfiEmail className="absolute top-5 left-5 text-lg " />
@@ -35,6 +44,7 @@ function Signin() {
             className="px-12 py-4"
             id="password"
             placeholder="Enter your password"
+            onChange={(e) => setPassword(e.target.value)}
           />
 
           <CiLock className="absolute top-5 left-5 text-lg " />
@@ -55,11 +65,11 @@ function Signin() {
           <p>Forget password?</p>
         </div>
 
-        <button className="w-full text-slate-100 bg-[#030213] py-4 rounded-xl">
+        <button type="submit" className="w-full text-slate-100 bg-[#030213] py-4 rounded-xl">
           Sign in
         </button>
       </div>
-    </div>
+    </form>
   );
 }
 

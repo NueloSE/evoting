@@ -4,11 +4,20 @@ import { FiUser } from "react-icons/fi";
 import { LuEye } from "react-icons/lu";
 import { LuEyeOff } from "react-icons/lu";
 import { useState } from "react";
+import { createNewUser } from "../server/backend";
 
 function Signup() {
   const [seePassword, setSeePassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // const [fullName, setFullName] = useState("");
+
+  function handleSubmit(event, userEmail, userPassword) {
+    event.preventDefault();
+    createNewUser( userEmail, userPassword);
+  }
   return (
-    <div>
+    <form onSubmit={(e) => handleSubmit(e, email, password)}>
       <div>
         <label htmlFor="email">Full Name</label>
         <div className="relative ">
@@ -17,6 +26,7 @@ function Signup() {
             className="px-12 py-4"
             id="password"
             placeholder="Enter your full name"
+            // onChange={(e) => setFullName(e.target.value)}
           />
 
           <FiUser className="absolute top-5 left-5 text-lg " />
@@ -31,6 +41,7 @@ function Signup() {
             className="px-12 py-4"
             id="password"
             placeholder="Enter your email"
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <TfiEmail className="absolute top-5 left-5 text-lg " />
@@ -45,6 +56,7 @@ function Signup() {
             className="px-12 py-4"
             id="password"
             placeholder="Create a password"
+            onChange={(e) => setPassword(e.target.value)}
           />
 
           <CiLock className="absolute top-4 left-5 text-xl text-black" />
@@ -73,7 +85,6 @@ function Signup() {
           />
 
           <CiLock className="absolute top-4 left-5 text-xl text-black" />
-          
         </div>
 
         {/* remember / forget */}
@@ -84,11 +95,14 @@ function Signup() {
           </div>
         </div>
 
-        <button className="w-full text-slate-100 bg-[#030213] py-4 rounded-xl">
+        <button
+          type="submit"
+          className="w-full text-slate-100 bg-[#030213] py-4 rounded-xl"
+        >
           Create Account
         </button>
       </div>
-    </div>
+    </form>
   );
 }
 

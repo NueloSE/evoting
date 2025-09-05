@@ -5,12 +5,18 @@ import Signup from "./Signup";
 import Signin from "./Signin";
 import Footer from "./Footer";
 import { useState, useRef } from "react";
+import { authSignInWithGoogle } from "../server/backend";
+import useStore from "../server/store";
+import { useNavigate } from "react-router-dom";
+// import { useEffect } from "react";
 
 function Authpage() {
   const [_signUp, setSignUp] = useState(false);
   const [signIn, setSignIn] = useState(true);
   const signInBtn = useRef(null);
   const signUpBtn = useRef(null);
+  const { user, _loading, initializeAuth, _error } = useStore();
+  const navigate = useNavigate();
 
   function handleSignUp() {
     setSignUp(true);
@@ -26,10 +32,20 @@ function Authpage() {
     signUpBtn.current.classList.remove("active");
   }
 
+  const handleGoogleSignIn = async () => {
+    authSignInWithGoogle();
+    initializeAuth();
+    if (user) {
+      navigate("/dashboard");
+    }
+  };
+
   return (
     <div className="space-y-24">
       <div>
-        <Mininav />
+        <div className="sticky top-0">
+          <Mininav userType="voter" />
+        </div>
 
         <div
           id="features"
@@ -40,10 +56,13 @@ function Authpage() {
         </div>
 
         {/* form container */}
-        <div className="max-w-3xl mx-auto shadow-2xl border border-slate-300  rounded-2xl px-8 py-12 mb-8">
+        <div className="max-w-xl mx-auto shadow-2xl border border-slate-300  rounded-2xl px-8 py-12 mb-8">
           <h4 className="text-center ">Authentication</h4>
 
-          <button className="btn flex items-center justify-center gap-2 border w-full py-4 ">
+          <button
+            onClick={handleGoogleSignIn}
+            className="btn flex items-center justify-center gap-2 border w-full py-4 "
+          >
             <FcGoogle /> Continue with Google
           </button>
 
