@@ -96,7 +96,7 @@ npm install
 Here is a list of key milestones for the project development:
 
 - ✅ Build the landing page
-- Set up Firebase project, including authentication, Firestore, Realtime Database, and Cloud Functions
+- ✅ Set up Firebase project, including authentication, Firestore, Realtime Database, and Cloud Functions
 - ⬜️ Implement organizer dashboard: create, edit, delete elections, categories, and candidates
 - ⬜️ Develop voter registration and authentication flow
 - ⬜️ Build voting interface for voters with real-time updates
