@@ -13,8 +13,8 @@ function Mininav({ userType }) {
     navigate("/auth");
   }
   return (
-    <nav className="relative flex justify-between px-16 py-10 bg-slate-200 ">
-      <Link className="absolute flex gap-1 items-center left-12 top-32" to="/">
+    <nav className="relative flex justify-between px-2 md:px-16 py-12 bg-slate-200 ">
+      <Link className="absolute flex gap-1 items-center left-12 top-[90px] bg-slate-300/40 px-4 py-2 rounded-lg" to="/">
         <BsArrowLeft className="text-xl" />
         Back to Home
       </Link>
@@ -23,6 +23,11 @@ function Mininav({ userType }) {
         <FaCheckToSlot className="text-3xl" />
         <h1 className="logo text-2xl">EVotes</h1>
       </div>
+
+      {/* {
+        pageTitle ? <div></div> : <></>
+      } */}
+
 
       <div className="flex gap-2 items-center">
         {userType && (

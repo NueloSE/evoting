@@ -4,19 +4,31 @@ import { Link } from "react-router-dom";
 import Signup from "./Signup";
 import Signin from "./Signin";
 import Footer from "./Footer";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { authSignInWithGoogle } from "../server/backend";
 import useStore from "../server/store";
 import { useNavigate } from "react-router-dom";
-// import { useEffect } from "react";
 
 function Authpage() {
   const [_signUp, setSignUp] = useState(false);
   const [signIn, setSignIn] = useState(true);
   const signInBtn = useRef(null);
   const signUpBtn = useRef(null);
-  const { user, _loading, initializeAuth, _error } = useStore();
+  const { user, loading, initializeAuth, _error } = useStore();
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const unsubscribe = initializeAuth();
+    return () => unsubscribe(); // Cleanup listener on component unmount
+  }, [initializeAuth]);
+
+  // Navigate to dashboard when user is authenticated
+  useEffect(() => {
+    if (user && !loading) {
+      navigate("/dashboard");
+    }
+  }, [user, loading, navigate]);
 
   function handleSignUp() {
     setSignUp(true);
@@ -33,10 +45,18 @@ function Authpage() {
   }
 
   const handleGoogleSignIn = async () => {
-    authSignInWithGoogle();
-    initializeAuth();
-    if (user) {
-      navigate("/dashboard");
+    try {
+      const { user, error } = await authSignInWithGoogle();
+
+      if (error) {
+        console.log(error);
+        return;
+      } else {
+        console.log(user.uid, 'signed in by google');
+        // await navigate("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -44,19 +64,19 @@ function Authpage() {
     <div className="space-y-24">
       <div>
         <div className="sticky top-0">
-          <Mininav userType="voter" />
+          <Mininav userType="" />
         </div>
 
         <div
           id="features"
-          className="text-center px-4 py-24 max-w-3xl mx-auto "
+          className="text-center px-4 py-12 max-w-2xl mx-auto "
         >
           <h2>Welcome to EVotes</h2>
           <p>Sign in to your account or create a new one to get started</p>
         </div>
 
         {/* form container */}
-        <div className="max-w-xl mx-auto shadow-2xl border border-slate-300  rounded-2xl px-8 py-12 mb-8">
+        <div className="max-w-lg mx-auto shadow-2xl border border-slate-300  rounded-2xl px-8 py-12  mb-8">
           <h4 className="text-center ">Authentication</h4>
 
           <button

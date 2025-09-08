@@ -6,14 +6,27 @@ import { FaArrowRight } from "react-icons/fa6";
 import { LuLaptopMinimalCheck } from "react-icons/lu";
 import { BsClock } from "react-icons/bs";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useStore from "../server/store";
+// import { queryDatabase } from "../server/backend";
 
 function Dashboard() {
+  const navigate = useNavigate();
+  const getElectionsData = useStore((state) => state.getElections);
 
-    const [organizerId, setOrganizerId] = useState('');
+  const [organizerId, setOrganizerId] = useState("");
+
+  async function handleContinueAsOrganizer() {
+    await getElectionsData();
+
+    navigate("/organizerdashboard");
+  }
 
   return (
     <div className="flex flex-col justify-between  min-h-screen ">
-      <Mininav />
+      <div className="sticky top-0">
+        <Mininav />
+      </div>
       <div className="flex flex-col items-center mb-24">
         <div className="text-center px-4 py-24 max-w-2xl mx-auto ">
           <h2>Choose Your Role</h2>
@@ -79,7 +92,10 @@ function Dashboard() {
                   </li>
                 </ul>
               </div>
-              <button className="flex items-center bg-slate-800 text-slate-50 w-full justify-center py-4 rounded-lg gap-2 cursor-pointer my-4">
+              <button
+                onClick={handleContinueAsOrganizer}
+                className="flex items-center bg-slate-800 text-slate-50 w-full justify-center py-4 rounded-lg gap-2 cursor-pointer my-4"
+              >
                 <p>Continue as Organizer</p>
                 <FaArrowRight />
               </button>
