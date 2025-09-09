@@ -3,10 +3,11 @@ import Mininav from "../Mininav";
 import { LuLaptopMinimalCheck } from "react-icons/lu";
 import { SiGoogleclassroom } from "react-icons/si";
 import { BsPeople } from "react-icons/bs";
-import { useRef } from "react";
+import { useRef,  } from "react";
 import ElectionManagement from "./ElectionManagement";
 import Categories from "./Categories";
 import Candidate from "./Candidate";
+import useStore from "../../server/store";
 // import useStore from "../../server/store";
 // import { queryDatabase } from "../../server/backend";
 
@@ -18,9 +19,8 @@ function Organizerdashboard() {
   const electionsComponet = useRef(null);
   const categoriesComponet = useRef(null);
   const candidateComponet = useRef(null);
-  // const userObj = useStore((state) => state.user);
+  const getElectionsData = useStore((state) => state.getElections);
 
-  // console.log(elections)
 
   function displayActivityToManage(selectedActivity) {
     const organizerActivities = [electionsBtn, categoriesBtn, candidateBtn];
@@ -50,9 +50,10 @@ function Organizerdashboard() {
     });
   }
 
-  function handleElectionBtn() {
+  async function handleElectionBtn() {
     displayActivityToManage(electionsBtn);
     displayCard(electionsComponet);
+    await getElectionsData();
   }
 
   function handleCategoriesBtn() {

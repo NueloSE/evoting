@@ -25,7 +25,7 @@ const useStore = create((set, get) => ({
       set({ error: result.error, loading: false });
       return;
     }
-
+    alert( `${electionData.title} created successfully`)
     set((state) => ({
       electionsObj: {
         ...state.electionsObj,

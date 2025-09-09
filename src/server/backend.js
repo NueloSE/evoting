@@ -18,6 +18,7 @@ import {
   serverTimestamp,
   setDoc,
   deleteDoc,
+  writeBatch,
 } from "firebase/firestore";
 
 // my configuration setting
@@ -167,20 +168,30 @@ export async function createNewElection(userUid, electionData) {
   }
 }
 
-export async function deleteCollection(db, collectionRef) {
+async function deleteCollection(db, collectionRef, batchSize = 100) {
   const querySnapshot = await getDocs(collectionRef);
-  const batch = [];
+  const batches = [];
 
-  querySnapshot.forEach((doc) => batch.push(deleteDoc(doc.ref)));
-
-  await Promise.all(batch);
-
-  const subCollections = await getDocs(collection(db, collectionRef.path));
-  for (const subCollection of subCollections) {
-    await deleteCollection(
-      db,
-      collection(db, collectionRef.path, subCollection.id)
+  for (const doc of querySnapshot.docs) {
+    const subcollectionRefs = await getDocs(
+      collection(db, collectionRef.path, doc.id)
     );
+    for (const subcollection of subcollectionRefs.docs) {
+      await deleteCollection(
+        db,
+        collection(db, collectionRef.path, doc.id, subcollection.id)
+      );
+    }
+
+    if (batches.length === 0 || batches[batches.length - 1].size >= batchSize) {
+      batches.push(writeBatch(db));
+    }
+
+    batches[batches.length - 1].delete(doc.ref);
+  }
+
+  for (const batch of batches) {
+    await batch.commit();
   }
 }
 
@@ -193,16 +204,23 @@ export async function deleteElection(userUid, electionId) {
       return { error: "Election does not exist" };
     }
 
-    await deleteCollection(
-      db,
-      collection(db, "organizers", userUid, "elections", electionId)
-    );
+    const knownSubcollections = ["categories", "candidates"];
+    for (const subcollectionName of knownSubcollections) {
+      const subcollectionRef = collection(
+        db,
+        "organizers",
+        userUid,
+        "elections",
+        electionId,
+        subcollectionName
+      );
+      await deleteCollection(db, subcollectionRef);
+    }
+
     await deleteDoc(electionRef);
+
     return { error: null, electionId };
   } catch (error) {
     return { error: error.message };
   }
 }
-
-
-

@@ -1,24 +1,24 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import useStore from "../../server/store";
+import DeleteElectionToast from "./DeleteElectionToast";
 
 function ElectionManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // useStore(s => s.getElections())
   let elections = useStore((state) => state.electionsObj);
   const createNewElection = useStore((state) => state.createNewElection);
-  const deleteElection = useStore((state) => state.deleteElection);
-  const [newElectionTitle, setNewElectionTitle] = useState(null);
-  const [newElectionDescription, setNewElectionDescription] = useState(null);
 
-  // const reloadElections = useStore((s) => s.getElections())
+  const [newElectionTitle, setNewElectionTitle] = useState("");
+  const [newElectionDescription, setNewElectionDescription] = useState("");
 
+  const [idToDelete, setIdToDelete] = useState(null);
+  const [isDeleteToast, setIsDeleteToast] = useState(false);
 
   const handleCreateNewElection = async (e) => {
     e.preventDefault();
-    if (!newElectionTitle || !newElectionDescription) {
+    if (!newElectionTitle.trim() || !newElectionDescription.trim()) {
       alert("Please provide both name and description");
       return;
     }
@@ -29,20 +29,16 @@ function ElectionManagement() {
       candidates: [],
       categories: [],
     });
+
     setNewElectionTitle("");
     setNewElectionDescription("");
     setIsModalOpen(!isModalOpen);
   };
 
-  const handleDeleteElection = async (electionId) => {
-    const result = await deleteElection(electionId);
-    if (result?.error) {
-      alert(result.error);
-    } else {
-      // Optionally refresh the data if needed, though store update should suffice
-      // await getOrganizerData(); // Uncomment if you want to refetch
-    }
-  };
+  function showHideDeleteToast(id) {
+    setIdToDelete(id);
+    setIsDeleteToast(!isDeleteToast);
+  }
 
   return (
     <div>
@@ -71,7 +67,7 @@ function ElectionManagement() {
                 Create a new election. You'll be able to add categories and
                 candidates after creation.
               </p>
-              <form>
+              <form onSubmit={(e) => handleCreateNewElection(e)}>
                 <div>
                   <label htmlFor="title">Election Title</label>
                   <input
@@ -103,11 +99,7 @@ function ElectionManagement() {
                   >
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    onClick={(e) => handleCreateNewElection(e)}
-                    className="btn sec-btn"
-                  >
+                  <button type="submit" className="btn sec-btn">
                     Create Election
                   </button>
                 </div>
@@ -144,7 +136,6 @@ function ElectionManagement() {
                   </li>
                   <li className="flex justify-between text-slate-500">
                     <span>Categories:</span>
-                    {console.log(elections)}
                     <span>{value.categories.length}</span>
                   </li>
                   <li className="flex justify-between text-slate-500">
@@ -154,7 +145,7 @@ function ElectionManagement() {
                 </ul>
 
                 {/* election control btn */}
-                <div className="flex items-center justify-between pb-8">
+                <div className="flex items-center justify-between pb-8 ">
                   <div className="flex gap-4 ">
                     <button className="flex items-center gap-1 border-slate-40 border rounded-lg px-2 ">
                       <MdOutlineRemoveRedEye className="mt-1" /> view
@@ -168,14 +159,23 @@ function ElectionManagement() {
                   </div>
                   <RiDeleteBin6Line
                     className="text-red-500 bg-slate-400/40 text-2xl rounded-sm p-1"
-                    onClick={() => handleDeleteElection(value.id)}
+                    onClick={() => showHideDeleteToast(value.id)}
+                  />
+                </div>
+                <div
+                  className={`fixed  bg-slate-50 top-1/2 w-1/2  p-4 ${
+                    isDeleteToast ? "" : "hidden"
+                  }`}
+                >
+                  <DeleteElectionToast
+                    electionName={idToDelete}
+                    onClose={() => setIsDeleteToast(false)}
                   />
                 </div>
               </div>
             ))
           )}
         </div>
-        
       </div>
     </div>
   );
