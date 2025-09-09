@@ -7,8 +7,9 @@ import DeleteElectionToast from "./DeleteElectionToast";
 
 function ElectionManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  let elections = useStore((state) => state.electionsObj);
+  const elections = useStore((state) => state.electionsObj);
   const createNewElection = useStore((state) => state.createNewElection);
+
 
   const [newElectionTitle, setNewElectionTitle] = useState("");
   const [newElectionDescription, setNewElectionDescription] = useState("");
@@ -110,7 +111,7 @@ function ElectionManagement() {
         {/* pull data from storage and pollate static field */}
         <div className="flex flex-col gap-4">
           {Object.keys(elections).length === 0 ? (
-            <p>No elections yet</p>
+            <p>Loading...</p>
           ) : (
             Object.entries(elections).map(([key, value]) => (
               <div
@@ -119,7 +120,7 @@ function ElectionManagement() {
               >
                 {/* election title/status */}
                 <div className="flex justify-between items-center ">
-                  <h4>{value.id}</h4>
+                  <h4>{value.title}</h4>
                   <p className="draft status">Draft</p>
                 </div>
 
@@ -158,7 +159,7 @@ function ElectionManagement() {
                     </button>
                   </div>
                   <RiDeleteBin6Line
-                    className="text-red-500 bg-slate-400/40 text-2xl rounded-sm p-1"
+                    className="text-red-500 border text-2xl rounded-sm p-1 cursor-pointer"
                     onClick={() => showHideDeleteToast(value.id)}
                   />
                 </div>

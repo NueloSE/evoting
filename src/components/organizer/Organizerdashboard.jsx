@@ -56,9 +56,10 @@ function Organizerdashboard() {
     await getElectionsData();
   }
 
-  function handleCategoriesBtn() {
+  async function handleCategoriesBtn() {
     displayActivityToManage(categoriesBtn);
     displayCard(categoriesComponet);
+    await getElectionsData();
   }
 
   function handleCandidateBtn() {

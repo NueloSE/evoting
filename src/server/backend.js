@@ -92,6 +92,53 @@ export function monitorAuthState(callback) {
   return onAuthStateChanged(auth, callback);
 }
 
+export async function loadCategories(user, electionName) {
+  if (!electionName) {
+    return { error: "Election not found", exists: false };
+  }
+
+  const categoryRef = collection(
+    db,
+    "organizers",
+    user.uid,
+    "elections",
+    electionName,
+    "categories"
+  );
+  const categoriesSnap = await getDocs(categoryRef);
+
+  if (categoriesSnap.empty) {
+    return { error: "No category found", categories: [] };
+  }
+  const categories = [];
+  for (const categoryDoc of categoriesSnap.docs) {
+    const categoryData = categoryDoc.data();
+    const candidatesRef = collection(
+      db,
+      "organizers",
+      user.uid,
+      "elections",
+      electionName,
+      "categories",
+      categoryDoc.id,
+      "candidates"
+    );
+    const candidatesSnap = await getDocs(candidatesRef);
+    const candidates = candidatesSnap.docs.map((candDoc) => ({
+      id: candDoc.id,
+      ...candDoc.data(),
+    }));
+
+    categories.push({
+      id: categoryDoc.id,
+      ...categoryData,
+      candidates, // Include candidates array
+    });
+  }
+
+  return { error: null, categories };
+}
+
 export async function continueAsOrganizer(user) {
   if (!user || !user.uid) {
     return { error: "No authenticated user", exists: false };
@@ -222,5 +269,139 @@ export async function deleteElection(userUid, electionId) {
     return { error: null, electionId };
   } catch (error) {
     return { error: error.message };
+  }
+}
+
+export async function createCategory(user, electionId, categoryData) {
+  if (!user || !electionId || !categoryData) {
+    return { error: "No user or election selected" };
+  }
+
+  try {
+    const newCategoryId = Date.now().toString();
+    const categoryRef = doc(
+      db,
+      "organizers",
+      user.uid,
+      "elections",
+      electionId,
+      "categories",
+      newCategoryId
+    );
+
+    await setDoc(categoryRef, {
+      title: categoryData.title,
+      description: categoryData.description, 
+      createdAt: serverTimestamp(),
+    })
+
+    // const candidatesRef = collection(
+    //   db,
+    //   "organizers",
+    //   user.uid,
+    //   "elections",
+    //   electionId,
+    //   "categories",
+    //   newCategoryId, "candidates"
+    // );
+
+    // const initialCandidateDocRef = doc(candidatesRef)
+    // await setDoc(initialCandidateDocRef, {});
+    
+    return { error: null , categoryId: newCategoryId };
+  } catch (error) {
+    console.log("Creation failed because: ", error);
+    return { error: "Failed to create" };
+  }
+}
+
+export async function deleteCategory(user, electionId, categoryId) {
+  if (!user || !user.uid || !electionId || !categoryId) {
+    return { error: "No user, election, or category selected" };
+  }
+
+  try {
+    const categoryRef = doc(
+      db,
+      "organizers",
+      user.uid,
+      "elections",
+      electionId,
+      "categories",
+      categoryId
+    );
+    await deleteDoc(categoryRef);
+
+    return { error: null };
+  } catch (error) {
+    console.log("Delete category error:", error);
+    return { error: "Failed to delete category" };
+  }
+}
+
+export async function createCandidate(
+  user,
+  electionId,
+  categoryId,
+  candidateData
+) {
+  if (!user || !user.uid || !electionId || !categoryId) {
+    return { error: "No user, election, or category selected" };
+  }
+
+  try {
+    const candidatesRef = collection(
+      db,
+      "organizers",
+      user.uid,
+      "elections",
+      electionId,
+      "categories",
+      categoryId,
+      "candidates"
+    );
+    const candidateDocRef = doc(candidatesRef); // Auto-generated unique ID
+    await setDoc(candidateDocRef, {
+      name: candidateData.name,
+      description: candidateData.description,
+      party: candidateData.party,
+      createdAt: serverTimestamp(),
+    });
+
+    return { error: null, candidateId: candidateDocRef.id };
+  } catch (error) {
+    console.log("Create candidate error:", error);
+    return { error: "Failed to create candidate" };
+  }
+}
+
+export async function deleteCandidate(
+  user,
+  electionId,
+  categoryId,
+  candidateId
+) {
+  if (!user || !user.uid || !electionId || !categoryId || !candidateId) {
+    return { error: "No user, election, category, or candidate selected" };
+  }
+
+  try {
+    const candidateRef = doc(
+      db,
+      "organizers",
+      user.uid,
+      "elections",
+      electionId,
+      "categories",
+      categoryId,
+      "candidates",
+      candidateId
+    );
+    await deleteDoc(candidateRef);
+
+    return { error: null };
+  } catch (error) {
+    console.log("Delete candidate error:", error);
+    return { error: "Failed to delete candidate" };
   }
 }
