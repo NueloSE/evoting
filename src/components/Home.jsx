@@ -3,7 +3,7 @@ import Hero from "./Hero";
 import Ready from "./Ready";
 import Reason from "./Features";
 import Work from "./Work";
-import Header from "./header";
+import Header from "./Header";
 import Footer from "./Footer";
 
 function Home() {
