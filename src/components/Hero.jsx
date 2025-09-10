@@ -52,7 +52,7 @@ function Hero() {
         <div className="relative mt-12">
           <img
             className="rounded-2xl"
-            src="/public/images/vote.jpeg"
+            src="/images/vote.jpeg"
             alt="a finger about to press a blue button on a keyboard with the key having the word vote"
           />
 
