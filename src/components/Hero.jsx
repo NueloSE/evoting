@@ -18,8 +18,13 @@ function Hero() {
         <div className="flex flex-col gap-4 md:flex-row md:w-fit">
           <button className="btn sec-btn ">Get Started</button>
           <button className="btn pry-btn  shadow-2xl">
-            <FontAwesomeIcon icon={faPlay} />
-            Watch Demo
+            <a
+              href="https://www.youtube.com/watch?v=fdnZZ_DEUGI"
+              target="_blank"
+            >
+              <FontAwesomeIcon icon={faPlay} />
+              Watch Demo
+            </a>
           </button>
         </div>
 
