@@ -215,60 +215,62 @@ export async function createNewElection(userUid, electionData) {
   }
 }
 
-async function deleteCollection(db, collectionRef, batchSize = 100) {
-  const querySnapshot = await getDocs(collectionRef);
-  const batches = [];
 
-  for (const doc of querySnapshot.docs) {
-    const subcollectionRefs = await getDocs(
-      collection(db, collectionRef.path, doc.id)
-    );
-    for (const subcollection of subcollectionRefs.docs) {
-      await deleteCollection(
-        db,
-        collection(db, collectionRef.path, doc.id, subcollection.id)
-      );
-    }
 
-    if (batches.length === 0 || batches[batches.length - 1].size >= batchSize) {
-      batches.push(writeBatch(db));
-    }
-
-    batches[batches.length - 1].delete(doc.ref);
+export async function deleteElection(user, electionId) {
+  if (!user || !user.uid || !electionId) {
+    return { error: "No user or election selected" };
   }
 
-  for (const batch of batches) {
-    await batch.commit();
-  }
-}
-
-export async function deleteElection(userUid, electionId) {
   try {
-    const electionRef = doc(db, "organizers", userUid, "elections", electionId);
-    const electionSnap = await getDoc(electionRef);
+    const batch = writeBatch(db);
 
-    if (!electionSnap.exists()) {
-      return { error: "Election does not exist" };
+    const categoriesRef = collection(
+      db,
+      "organizers",
+      user.uid,
+      "elections",
+      electionId,
+      "categories"
+    );
+    const categoriesSnap = await getDocs(categoriesRef);
+
+    if (!categoriesSnap.empty) {
+      for (const categoryDoc of categoriesSnap.docs) {
+        const candidatesRef = collection(
+          db,
+          "organizers",
+          user.uid,
+          "elections",
+          electionId,
+          "categories",
+          categoryDoc.id,
+          "candidates"
+        );
+        const candidatesSnap = await getDocs(candidatesRef);
+        candidatesSnap.forEach((candidateDoc) => {
+          batch.delete(candidateDoc.ref);
+        });
+
+        batch.delete(categoryDoc.ref);
+      }
+      await batch.commit();
     }
 
-    const knownSubcollections = ["categories", "candidates"];
-    for (const subcollectionName of knownSubcollections) {
-      const subcollectionRef = collection(
-        db,
-        "organizers",
-        userUid,
-        "elections",
-        electionId,
-        subcollectionName
-      );
-      await deleteCollection(db, subcollectionRef);
-    }
-
+    // Delete the election document
+    const electionRef = doc(
+      db,
+      "organizers",
+      user.uid,
+      "elections",
+      electionId
+    );
     await deleteDoc(electionRef);
 
-    return { error: null, electionId };
+    return { error: null };
   } catch (error) {
-    return { error: error.message };
+    console.log("Delete election error:", error);
+    return { error: "Failed to delete election" };
   }
 }
 
@@ -291,9 +293,9 @@ export async function createCategory(user, electionId, categoryData) {
 
     await setDoc(categoryRef, {
       title: categoryData.title,
-      description: categoryData.description, 
+      description: categoryData.description,
       createdAt: serverTimestamp(),
-    })
+    });
 
     // const candidatesRef = collection(
     //   db,
@@ -307,8 +309,8 @@ export async function createCategory(user, electionId, categoryData) {
 
     // const initialCandidateDocRef = doc(candidatesRef)
     // await setDoc(initialCandidateDocRef, {});
-    
-    return { error: null , categoryId: newCategoryId };
+
+    return { error: null, categoryId: newCategoryId };
   } catch (error) {
     console.log("Creation failed because: ", error);
     return { error: "Failed to create" };

@@ -101,27 +101,25 @@ const useStore = create((set, get) => ({
       set({ error: "No authenticated user" });
       return;
     }
-
     set({ loading: true });
-    const result = await deleteElection(user.uid, electionId);
-
+    const result = await deleteElection(user, electionId); // Pass user object
     if (result.error) {
       set({ error: result.error, loading: false });
-      return result;
+    } else {
+      set((state) => {
+        const newElectionsObj = { ...state.electionsObj };
+        delete newElectionsObj[electionId];
+        const newCategoriesObj = { ...state.categoriesObj };
+        delete newCategoriesObj[electionId];
+        return {
+          electionsObj: newElectionsObj,
+          categoriesObj: newCategoriesObj,
+          loading: false,
+        };
+      });
     }
-
-    set((state) => {
-      const newElectionsObj = { ...state.electionsObj };
-      delete newElectionsObj[electionId];
-      return {
-        electionsObj: newElectionsObj,
-        loading: false,
-      };
-    });
-
-    // store.loadElections
-
     return result;
+  
   },
 
   createCategory: async (electionId, categoryData) => {
